@@ -1,72 +1,27 @@
-import React, {useEffect, useState} from "react";
-import {SafeAreaView, FlatList, View, StatusBar, Platform, StyleSheet, Text} from "react-native";
-import {fetchCoinMarket} from "../utils/coinApi";
-import {CoinMarketItem} from "../components/CoinMarketItem";
+import React from "react";
 import COLORS from "../utils/COLORS";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import CoinMarket from "./Prices/CoinMarket";
+import ExchangeRate from "./Prices/ExchangeRate";
+import Emtia from "./Prices/Emtia";  
 
-const Prices = () => {
-    const [myData,setMyData]=useState([])
-    const [error,setError]=useState(null)
-    useEffect(()=>{
-        fetchCoinMarket().then((data) => {
-            setMyData(data)
-            console.log(data)
-        },
-        (error) => {
-            setError(error);
-        })
-    },[])
-    const renderItem = ({ item }) => (
-       <CoinMarketItem image={item.image} name={item.name} currentPrice={item.current_price} currentPriceChange={item.price_change_percentage_24h_in_currency.toFixed(2)}/>
+
+  const Tab = createMaterialTopTabNavigator();
+  
+  export default function App() {
+    return (
+      <NavigationContainer independent={true}>
+        <Tab.Navigator screenOptions={({ route }) => ({
+                // headerShown: false,
+                tabBarActiveTintColor: COLORS.white,
+                tabBarInactiveTintColor: COLORS.greyLight,
+                tabBarStyle: { backgroundColor: COLORS.black },              
+            })}>
+          <Tab.Screen name="Exchange Rate" component={ExchangeRate} />
+          <Tab.Screen name="EMTIA" component={Emtia} />
+          <Tab.Screen name="Crypto" component={CoinMarket} />
+        </Tab.Navigator>
+      </NavigationContainer>
     );
-    const itemSeparator = () => (
-        <View style={styles.itemSeparator}/>
-    );
-
-  return (
-    <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content"/>
-        <View style={styles.view}>
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                data={myData}
-                renderItem={renderItem}
-                ItemSeparatorComponent={itemSeparator}
-                keyExtractor={item => item.id}
-            >
-            </FlatList>
-        </View>   
-    </SafeAreaView>
-  );
-};
-
-export default Prices;
-
-const styles = StyleSheet.create({
-    container: {
-        flex:1, 
-        backgroundColor:COLORS.black, 
-        color: COLORS.white,
-        paddingTop: Platform.OS === 'android' ? StatusBar.height : 0
-    },
-    itemSeparator: {
-        height: 1, 
-        width: "100%", 
-        backgroundColor: COLORS.grey, 
-        marginVertical: 12,
-    },
-    view: {
-        backgroundColor:COLORS.black, 
-        padding:16,
-    },
-    tabBar: {
-        marginTop: 5,
-        marginHorizontal: 5,
-        backgroundColor: COLORS.greyDark,
-    },
-    text: {
-        color: COLORS.white,
-        fontSize: 16,
-    },
-});
+  }

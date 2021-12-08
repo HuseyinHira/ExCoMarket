@@ -16,17 +16,16 @@ const Home = ({navigation}) => {
     useEffect(()=>{
         fetchNews().then((data) => {
             setMyData(data.articles)
-            console.log(data)
         },
         (error) => {
             setError(error);
         })
     },[])
     const renderItem = ({ item }) => (
-       <MarketNewsItem imageNews={item.image} nameNews={item.title} source={item.source.url} />
+       <MarketNewsItem imageNews={item.urlToImage} nameNews={item.title} source={item.url} />
     );
     const itemSeparator = () => (
-        <View style={styles.itemSeparator}/>
+      <View style={styles.itemSeparator}/>
     );
   return (
     <SafeAreaView style={styles.container}>
@@ -37,7 +36,7 @@ const Home = ({navigation}) => {
             data={myData}
             renderItem={renderItem}
             ItemSeparatorComponent={itemSeparator}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.title}
         >
         </FlatList>
         </View>

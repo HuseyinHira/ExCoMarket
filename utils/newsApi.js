@@ -1,4 +1,4 @@
-const API_URL = 'https://gnews.io/api/v4/search?q=economy&token=a086a2c8c8d372bdce5809d64f3a20d3'
+const API_URL = 'https://newsapi.org/v2/top-headlines?country=tr&category=business&apiKey=3ef1189d9a5a4c02a76bee03db27c431'
 
 export const fetchNews = async ()=>{
      return await fetch(API_URL)
