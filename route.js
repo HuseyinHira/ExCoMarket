@@ -2,8 +2,6 @@ import React from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
-import Favourites from './screens/Favourites';
 import Home from './screens/Home';
 import User from './screens/User';
 import Prices from './screens/Prices';
@@ -51,19 +49,6 @@ const App = () => {
                   tabBarIcon: (tabInfo) => (
                     <Ionicons
                       name="stats-chart-outline"
-                      size={tabInfo.focused ? 26 : 20}
-                      color={COLORS.white}
-                    />
-                  ),
-                }}/>
-              <Tab.Screen 
-                name="Favourites" 
-                component={Favourites}
-                options={{
-                  tabBarLabel: 'Favourites',
-                  tabBarIcon: (tabInfo) => (
-                    <Ionicons
-                      name="star-outline"
                       size={tabInfo.focused ? 26 : 20}
                       color={COLORS.white}
                     />

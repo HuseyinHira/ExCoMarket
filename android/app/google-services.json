@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "661769384341",
+    "project_id": "deneme-d480a",
+    "storage_bucket": "deneme-d480a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661769384341:android:c2a6b08d75fb7db010869c",
+        "android_client_info": {
+          "package_name": "com.exco.excomarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661769384341-lmn3523ndbdbk18hmrctch55m6jf9cpg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrTkHfqJptO9vddudzKUKvBN-VFQRb3Us"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661769384341-lmn3523ndbdbk18hmrctch55m6jf9cpg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,21 +7,20 @@ import ExchangeRate from "./Prices/ExchangeRate";
 import Emtia from "./Prices/Emtia";  
 
 
-  const Tab = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator();
   
-  export default function App() {
-    return (
-      <NavigationContainer independent={true}>
-        <Tab.Navigator screenOptions={({ route }) => ({
-                // headerShown: false,
-                tabBarActiveTintColor: COLORS.white,
-                tabBarInactiveTintColor: COLORS.greyLight,
-                tabBarStyle: { backgroundColor: COLORS.black },              
+export default function App() {
+  return (
+    <NavigationContainer independent={true}>
+      <Tab.Navigator screenOptions={({ route }) => ({
+              tabBarActiveTintColor: COLORS.white,
+              tabBarInactiveTintColor: COLORS.greyLight,
+              tabBarStyle: { backgroundColor: COLORS.black },              
             })}>
-          <Tab.Screen name="Exchange Rate" component={ExchangeRate} />
-          <Tab.Screen name="EMTIA" component={Emtia} />
-          <Tab.Screen name="Crypto" component={CoinMarket} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    );
-  }
+        <Tab.Screen name="Exchange Rate" component={ExchangeRate} />
+        <Tab.Screen name="EMTIA" component={Emtia} />
+        <Tab.Screen name="Crypto" component={CoinMarket} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}

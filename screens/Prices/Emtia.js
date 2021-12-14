@@ -1,24 +1,53 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useLayoutEffect} from "react";
 import {SafeAreaView, FlatList, View, StatusBar, Platform, StyleSheet, Text, ActivityIndicator} from "react-native";
 import {fetchEmtia} from "../../utils/emtiaApi";
-import {EmtiaItem} from "../../components/EmtiaItem";
+import {EmtiaItem} from "../../components/Prices/EmtiaItem";
 import COLORS from "../../utils/COLORS";
+import { auth, database } from "../../utils/firebaseApi";
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 const Emtia = () => {
     const [myData,setMyData]=useState([])
+    const [favouriteData,setFavouriteData]=useState([])
     const [loading, setLoading] = useState(false);
     const [error,setError]=useState(null)
+
+    const [refreshing, setRefreshing] = React.useState(false);
+    const [user, setUser] = useState();
+
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      wait(2000).then(() => setRefreshing(false));
+    }, []);
     
-    useEffect(()=>{
+    function onAuthStateChanged(user) {
+        setUser(user);
+    }
+
+    useLayoutEffect(()=>{
+        const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
         fetchEmtia().then((data) => {
             setMyData(data.data.kiymetli_metal)
         },
         (error) => {
             setError(error);
         })
-    },[])
+        if(user != null)
+        {
+        database.collection("users").doc(auth.currentUser.uid).get().then(doc=>{
+            doc.data().emtiaFavs.forEach(item=>{
+                favouriteData.push(item.fav.name)
+            })
+        })
+        onRefresh();
+        }
+        return subscriber;
+    },[user])
     const renderItem = ({ item }) => (
-       <EmtiaItem name={item.kiymetli_metal} price={item.son} change={item.fark} state={item.durum}/>
+       <EmtiaItem  favouriteData={favouriteData} name={item.kiymetli_metal} price={item.son} change={item.fark} state={item.durum}/>
     );
     const itemSeparator = () => (
         <View style={styles.itemSeparator}/>
@@ -29,11 +58,8 @@ const Emtia = () => {
         <StatusBar barStyle="light-content"/>
         {loading ? (
           <ActivityIndicator
-            //visibility of Overlay Loading Spinner
             visible={loading}
-            //Text with the Spinner
             textContent={'Loading...'}
-            //Text style of the Spinner Text
             textStyle={styles.spinnerTextStyle}
           />
         ) : (

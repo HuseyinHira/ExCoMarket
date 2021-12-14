@@ -1,32 +1,38 @@
 import React, {useState, useEffect} from "react";
-import { Platform, Text, SafeAreaView, View, StyleSheet, KeyboardAvoidingView, TextInput } from "react-native";
+import { Text, SafeAreaView, View, StyleSheet, KeyboardAvoidingView, TextInput} from "react-native";
 import Home from "./Home"
 import { TouchableOpacity } from "react-native-gesture-handler";
 import COLORS from "../utils/COLORS";
-import { auth } from "../utils/firebaseApi";
+import { auth, database } from "../utils/firebaseApi";
 import 'react-native-gesture-handler';
-
 
 const User = () =>{
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const [isLoggedIn, setIsLoggedIn] = React.useState(null);
+
+  const onAuthStateChanged = (user) => {
+    setIsLoggedIn(user);
+  }
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user){
-        
-      }
-    })
-    return unsubscribe
+    const unsubscribe = auth.onAuthStateChanged(onAuthStateChanged);
+    return unsubscribe;
   }, [])
 
+
   const handleSignUp = () => {
-    auth
-    .createUserWithEmailAndPassword(email, password)
-    .then(userCredentials => {
-      const user = userCredentials.user;
-    })
-    .catch(error => alert(error.message))
+    auth.createUserWithEmailAndPassword(email, password)
+    .then(authUser => {
+      database.collection("users").doc(authUser.user.uid).set({
+          userId: authUser.user.uid,
+          emtiaFavs: [],
+          exchangeFavs: [],
+          coinFavs: [],
+      })     
+  })
+  .catch(error => alert(error.message))
   }
 
   const handleLogin = () => {
@@ -35,20 +41,19 @@ const User = () =>{
     .then(userCredentials => {
       const user = userCredentials.user;
     })
-    .then(()=>window.location.reload(false))
     .catch(error => alert(error.message))
   }
 
   const handleSignOut = () => {
     auth
       .signOut()
-      .then(() => window.location.reload(true))
       .catch(error => alert(error.message))
   }
 
-  if (auth.currentUser == null){
+
+  if (isLoggedIn === null){
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} >
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.inputContainer}>
             <TextInput placeholder="E-Mail" style={styles.input} value={email} onChangeText={text => setEmail(text)}/>
@@ -82,6 +87,12 @@ const User = () =>{
 export default User;
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex:1,
+    backgroundColor: COLORS.black,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

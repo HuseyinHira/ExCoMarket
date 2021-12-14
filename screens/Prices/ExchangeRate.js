@@ -1,25 +1,67 @@
-import React, {useEffect, useState} from "react";
+import React, {useState, useLayoutEffect} from "react";
 import {SafeAreaView, FlatList, View, StatusBar, Platform, StyleSheet, Text} from "react-native";
 import {fetchExchangeRate} from "../../utils/exchangeRateApi";
-import {ExchangeRateItem} from "../../components/ExchangeRateItem"
+import {ExchangeRateItem} from "../../components/Prices/ExchangeRateItem"
+import { auth, database } from "../../utils/firebaseApi";
 import COLORS from "../../utils/COLORS";
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 const ExchangeRate = () =>{
     const [myData,setMyData]=useState([])
     const [error,setError]=useState(null)
     const [loading, setLoading] = useState(false)
+    const [favouriteData,setFavouriteData]=useState([])
 
-    useEffect(()=>{
-      fetchExchangeRate().then((data) => {
+    const [refreshing, setRefreshing] = React.useState(false);
+    const [user, setUser] = useState();
+
+
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      wait(2000).then(() => setRefreshing(false));
+    }, []);
+
+    function onAuthStateChanged(user) {
+        setUser(user);
+    }
+
+    useLayoutEffect(()=>{
+        const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+        fetchExchangeRate().then((data) => {
             setMyData(data.TCMB_AnlikKurBilgileri)
         },
         (error) => {
             setError(error);
         })
-    },[])
-    const renderItem = ({ item }) => (
-       <ExchangeRateItem name={item.Isim} buyRate={item.BanknoteBuying} sellRate={item.BanknoteSelling}/>
-    );
+        if(user != null)
+        {
+        database.collection("users").doc(user.uid).get().then(doc=>{
+            doc.data().exchangeFavs.forEach(item=>{
+                console.log(item);
+                favouriteData.push(item.fav.name)
+            })
+        })
+        onRefresh();
+        }
+        return subscriber;
+    },[user]);
+
+    const renderItem = ({ item }) => {
+        if(item.BanknoteBuying.toString()!=""){
+            return(
+                <ExchangeRateItem favouriteData={favouriteData} name={item.Isim} buyRate={item.BanknoteBuying} sellRate={item.BanknoteSelling}/>
+            )
+        }
+        else{
+            return(
+            <ExchangeRateItem favouriteData={favouriteData} name={item.Isim} buyRate={item.ForexBuying} sellRate={item.ForexSelling}/>
+            )
+        }
+    }
+    
     const itemSeparator = () => (
         <View style={styles.itemSeparator}/>
     );
@@ -29,11 +71,8 @@ const ExchangeRate = () =>{
         <StatusBar barStyle="light-content"/>
         {loading ? (
           <ActivityIndicator
-            //visibility of Overlay Loading Spinner
             visible={loading}
-            //Text with the Spinner
             textContent={'Loading...'}
-            //Text style of the Spinner Text
             textStyle={styles.spinnerTextStyle}
           />
         ) : (
