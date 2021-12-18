@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.excomarket"
+      "package": "com.excomarket",
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
