@@ -1,4 +1,4 @@
-import React, {useState, useLayoutEffect} from "react";
+import React, {useState, useLayoutEffect, useEffect} from "react";
 import {SafeAreaView, FlatList, View, StatusBar, Platform, StyleSheet, Text} from "react-native";
 import {fetchExchangeRate} from "../../utils/exchangeRateApi";
 import {ExchangeRateItem} from "../../components/Prices/ExchangeRateItem"
@@ -17,7 +17,7 @@ const ExchangeRate = () =>{
         setUser(user);
     }
 
-    useLayoutEffect(()=>{
+    useEffect(()=>{
         const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
         fetchExchangeRate().then((data) => {
             setMyData(data.TCMB_AnlikKurBilgileri)

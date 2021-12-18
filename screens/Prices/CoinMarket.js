@@ -36,7 +36,7 @@ const CoinMarket = () => {
         return subscriber;
     },[user])
     const renderItem = ({ item }) => (
-       <CoinMarketItem favouriteData={favouriteData} image={item.image} name={item.name} currentPrice={item.current_price} currentPriceChange={item.price_change_percentage_24h_in_currency.toFixed(2)}/>
+       <CoinMarketItem favouriteData={favouriteData} image={item.image} name={item.name} currentPrice={item.current_price} currentPriceChange={Number(item.price_change_percentage_24h_in_currency).toFixed(3)}/>
     );
     const itemSeparator = () => (
         <View style={styles.itemSeparator}/>
