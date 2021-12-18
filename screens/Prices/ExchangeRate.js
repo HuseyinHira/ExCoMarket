@@ -5,24 +5,13 @@ import {ExchangeRateItem} from "../../components/Prices/ExchangeRateItem"
 import { auth, database } from "../../utils/firebaseApi";
 import COLORS from "../../utils/COLORS";
 
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 const ExchangeRate = () =>{
     const [myData,setMyData]=useState([])
     const [error,setError]=useState(null)
     const [loading, setLoading] = useState(false)
     const [favouriteData,setFavouriteData]=useState([])
 
-    const [refreshing, setRefreshing] = React.useState(false);
     const [user, setUser] = useState();
-
-
-    const onRefresh = React.useCallback(() => {
-      setRefreshing(true);
-      wait(2000).then(() => setRefreshing(false));
-    }, []);
 
     function onAuthStateChanged(user) {
         setUser(user);
@@ -44,7 +33,6 @@ const ExchangeRate = () =>{
                 favouriteData.push(item.fav.name)
             })
         })
-        onRefresh();
         }
         return subscriber;
     },[user]);

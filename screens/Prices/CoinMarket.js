@@ -1,13 +1,9 @@
-import React, {useEffect, useState, useLayoutEffect} from "react";
+import React, {useState, useLayoutEffect} from "react";
 import {SafeAreaView, FlatList, View, StatusBar, Platform, StyleSheet, Text} from "react-native";
 import {fetchCoinMarket} from "../../utils/coinApi";
 import {CoinMarketItem} from "../../components/Prices/CoinMarketItem"
 import COLORS from "../../utils/COLORS";
 import { auth, database } from "../../utils/firebaseApi";
-
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
 
 const CoinMarket = () => {
     const [myData,setMyData]=useState([])
@@ -15,13 +11,7 @@ const CoinMarket = () => {
     const [loading, setLoading] = useState(false)
     const [favouriteData,setFavouriteData]=useState([])
 
-    const [refreshing, setRefreshing] = React.useState(false);
     const [user, setUser] = useState();
-
-    const onRefresh = React.useCallback(() => {
-      setRefreshing(true);
-      wait(2000).then(() => setRefreshing(false));
-    }, []);
 
     function onAuthStateChanged(user) {
         setUser(user);
@@ -42,7 +32,6 @@ const CoinMarket = () => {
                 favouriteData.push(item.fav.name)
             })
         })
-        onRefresh();
         }
         return subscriber;
     },[user])

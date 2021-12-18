@@ -6,18 +6,8 @@ import firebase from "firebase";
 import 'react-native-gesture-handler';
 import { auth, database } from "../../utils/firebaseApi";
 
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 export const CoinMarketItem=(props)=>{
-    const [refreshing, setRefreshing] = React.useState(false);
     const [isFav, setIsFav] = React.useState(false);
-
-    const onRefresh = React.useCallback(() => {
-      setRefreshing(true);
-      wait(2000).then(() => setRefreshing(false));
-    }, []);
 
     const addFavourites = () => {
         database.collection("users").doc(auth.currentUser.uid).update({
@@ -29,7 +19,6 @@ export const CoinMarketItem=(props)=>{
             }})
         })
         .then(setIsFav(true))
-        .then(onRefresh())
     }
 
     if (auth.currentUser == null){

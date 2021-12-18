@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, Image, View, StyleSheet } from "react-native";
+import {Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import React from "react";
 import COLORS from "../../utils/COLORS";
 import { Ionicons } from '@expo/vector-icons';
@@ -6,19 +6,9 @@ import firebase from "firebase";
 import 'react-native-gesture-handler';
 import { auth, database } from "../../utils/firebaseApi";
 
-const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 export const ExchangeRateItem=(props)=>{
 
-    const [refreshing, setRefreshing] = React.useState(false);
     const [isFav, setIsFav] = React.useState(false);
-
-    const onRefresh = React.useCallback(() => {
-      setRefreshing(true);
-      wait(2000).then(() => setRefreshing(false));
-    }, []);
 
     const addFavourites = () => {
         database.collection("users").doc(auth.currentUser.uid).update({
@@ -29,7 +19,6 @@ export const ExchangeRateItem=(props)=>{
             }})
         })
         .then(setIsFav(true))
-        .then(onRefresh())
     }
 
     if (auth.currentUser == null){
